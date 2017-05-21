@@ -32,6 +32,7 @@ import javafx.stage.Stage;
 
 import model.PuzzleGame;
 import model.PuzzleGame.action;
+import model.GreedyPlayer;
 import model.Player;
 
 public class SlidingPuzzleGUI extends Application implements Observer {
@@ -43,6 +44,7 @@ public class SlidingPuzzleGUI extends Application implements Observer {
 		//	add your player here
 		// 	e.g. result.add(YOURPLAYER.class);
 		//#---------------------------------------------------------------#
+		result.add(GreedyPlayer.class);
 		
 		return result;
 	}
