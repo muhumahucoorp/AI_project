@@ -52,7 +52,7 @@ public class PuzzleGame extends Observable {
 					zX=j;
 				}
 			}
-		}	
+		}
 		
 		Vector<action> result = new Vector<>();
 			

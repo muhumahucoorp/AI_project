@@ -2,84 +2,114 @@ package model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
+import java.util.PriorityQueue;
 
 import model.PuzzleGame.action;
-import model.ActionSet;
 
 public class GreedyPlayer extends Player {
 
 	@Override
 	public List<action> solve(PuzzleGame game) {
-		//List of steps to solve the game
-		List<action> result = new ArrayList<>();
-		//List of items possible to make in the game
-		List<ActionSet> possibleActions = new ArrayList<>();
-		//Current step in the game
-		int curStep = 1;
 		
-		//Board in the previous step
-		Integer[][] oldBoard = null;
+		List<State> oldStates = new ArrayList<>();
 		
-		//Current board
-		Integer[][] currentBoard = game.getGameBoard();
-		
-		while(game.isSolution(currentBoard)) {
-			Random rand = new Random();
-			
-			//Allowed actions in the current step
-			action[] allowedActions = game.getPossibleActions(currentBoard);
-			//Next action
-			action next = null;
-			//Heuristic value of the next action
-			int effect = Integer.MAX_VALUE;
-			//Step in which the next action was possible to take
-			int stepOfNext = 0;
-			
-			//Adds all new available actions into the list of possible actions
-			for(action newAction: allowedActions) {
-				possibleActions.add(new ActionSet(curStep, newAction));
+		PriorityQueue<State> relevantStates = new PriorityQueue<>(new Comparator<State>() {
+			@Override
+			public int compare(State s1, State s2) {
+				// TODO Auto-generated method stub
+				if(s1.getHeuristicValue() < s2.getHeuristicValue()) {
+					return -1;
+				} else if(s1.getHeuristicValue() > s2.getHeuristicValue()) {
+					return 1;
+				} else {
+					return 0;
+				}
 			}
+		});
+		
+		PriorityQueue<State> possibleStates = new PriorityQueue<>(new Comparator<State>() {
+			@Override
+			public int compare(State s1, State s2) {
+				// TODO Auto-generated method stub
+				if(s1.getHeuristicValue() < s2.getHeuristicValue()) {
+					return -1;
+				} else if(s1.getHeuristicValue() > s2.getHeuristicValue()) {
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		});
+		
+		relevantStates.add(new State(new ArrayList<action>(), game.getGameBoard(), game.getHeuristicValue(game.getGameBoard())));
+		
+		State solutionState = relevantStates.peek();
+		
+		System.out.println("Start solving");
+		
+		while(!game.isSolution(solutionState.getBoard())) {
 			
-			for(ActionSet nextActionSet: possibleActions) {
-				//New board if the action from nextActionSet is used
-				Integer[][] possibleBoard = game.computeAction(nextActionSet.getAction(), currentBoard);
+			State newState = null;
+			
+			//List of items possible to make in the game
+			possibleStates.clear();
+			
+			for(State currentState : relevantStates) {
 				
-				//System.out.print("->" + a + ", " + game.getHeuristicValue(possibleBoard));
-				//System.out.println(possibleBoard.toString() + ", " + oldBoard.toString() + ", " + Arrays.equals(possibleBoard, oldBoard));
+				//Allowed actions in the current step
+				action[] allowedActions = game.getPossibleActions(currentState.getBoard());
 				
-				/*Checks whether the new action in the nextActionSet is better than the one currently selected
-				and if the new actions is not cancels the last one*/
-				if(game.getHeuristicValue(possibleBoard) <= effect && !Arrays.equals(possibleBoard, oldBoard)) {
-					//If both actions are equally good, a random one is taken
-					if(game.getHeuristicValue(possibleBoard) == effect) {
-						if(rand.nextBoolean() == true){
-							effect = game.getHeuristicValue(possibleBoard);
-							next = nextActionSet.getAction();
+				boolean old = true;
+				
+				//System.out.println("Add new possible actions");
+				//Adds all new available actions into the list of possible actions
+				for(action newAction : allowedActions) {
+					//New board if the action from nextActionSet is used
+					//System.out.println("Proveing new action");
+					Integer[][] possibleBoard = game.computeAction(newAction, currentState.getBoard());
+					boolean makesLoop = false;
+					List<State> allStates = new ArrayList<>(relevantStates);
+					allStates.addAll(oldStates);
+					for(State state : allStates) {
+						if(Arrays.deepEquals(state.getBoard(), possibleBoard)) {
+							//System.out.println("Loop detected");
+							makesLoop = true;
+							break;
 						}
-					} else {
-						effect = game.getHeuristicValue(possibleBoard);
-						next = nextActionSet.getAction();
 					}
+					
+					if(!makesLoop) {
+						//System.out.println("New possible action found");
+						List<action> actions = new ArrayList<>(currentState.getActions());
+						actions.add(newAction);
+						//System.out.println("Making new state");
+						State state = new State(actions, possibleBoard, game.getHeuristicValue(possibleBoard));
+						possibleStates.add(state);
+						old = false;
+					}
+				}
+				
+				if(old == true) {
+					oldStates.add(currentState);
 				}
 			}
 			
-			System.out.print("\n");
-			System.out.println("Event: " + next + ": " + effect);
+			relevantStates.removeAll(oldStates);
 			
-			oldBoard = currentBoard;
-			currentBoard = game.computeAction(next, currentBoard);
+			newState = possibleStates.peek();
 			
-			//Removes the actions that has been made till the step the new action is from
-			for(int j = 0; j < (curStep-stepOfNext); j++) {
-				result.remove(result.size()-1);
+			//System.out.println("New solutionState");
+			if(newState != null) {
+				solutionState = newState;
+				relevantStates.add(newState);
+			} else {
+				return null;
 			}
-			
-			//Adds the new action to the result
-			result.add(next);
 		}
-		return result;
+		System.out.println("Solved");
+		return solutionState.getActions();
 	}
-
+	
 }
