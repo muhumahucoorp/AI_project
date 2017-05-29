@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Arrays;
 import java.util.List;
 
 import model.PuzzleGame.action;
@@ -23,6 +24,16 @@ public class State {
 		this.heuristicValue = heuristicValue;
 	}
 	
+	
+	public boolean equals(State other) {
+	    
+	    if (this == other) return true;
+	    if (heuristicValue != other.getHeuristicValue()) return false;
+	    if (!Arrays.deepEquals(board, other.getBoard())) return false;
+	    // The algorithm does not care for the action path.
+	    
+	    return true;
+	}
 	
 	/**
 	 * Standard setter of the action

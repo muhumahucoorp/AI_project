@@ -33,6 +33,7 @@ import javafx.stage.Stage;
 import model.PuzzleGame;
 import model.PuzzleGame.action;
 import model.AStarPlayer;
+import model.SimpleBFSPlayer;
 import model.Player;
 
 public class SlidingPuzzleGUI extends Application implements Observer {
@@ -45,6 +46,7 @@ public class SlidingPuzzleGUI extends Application implements Observer {
 		// 	e.g. result.add(YOURPLAYER.class);
 		//#---------------------------------------------------------------#
 		result.add(AStarPlayer.class);
+		result.add(SimpleBFSPlayer.class);
 		
 		return result;
 	}
