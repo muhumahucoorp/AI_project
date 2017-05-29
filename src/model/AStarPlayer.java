@@ -29,9 +29,7 @@ public class AStarPlayer extends Player {
 			}
 		});
 		
-		State solutionState = new State(new ArrayList<action>(), game.getGameBoard(), game.getHeuristicValue(game.getGameBoard()));
-		
-		System.out.println("Start solving");
+		State solutionState = new State(new ArrayList<action>(), game.getGameBoard(), game.getHeuristicValue(game.getGameBoard()));		
 		
 		while(!game.isSolution(solutionState.getBoard())) {
 			
@@ -68,10 +66,11 @@ public class AStarPlayer extends Player {
 			
 			oldStates.add(solutionState);
 			
-			
 			solutionState = possibleStates.poll();
 		}
+		
 		System.out.println("Solved");
+		
 		return solutionState.getActions();
 	}
 	

@@ -33,6 +33,7 @@ import javafx.stage.Stage;
 import model.PuzzleGame;
 import model.PuzzleGame.action;
 import model.AStarPlayer;
+import model.AStarPlayerTwo;
 import model.SimpleBFSPlayer;
 import model.Player;
 
@@ -46,6 +47,7 @@ public class SlidingPuzzleGUI extends Application implements Observer {
 		// 	e.g. result.add(YOURPLAYER.class);
 		//#---------------------------------------------------------------#
 		result.add(AStarPlayer.class);
+		result.add(AStarPlayerTwo.class);
 		result.add(SimpleBFSPlayer.class);
 		
 		return result;
@@ -158,6 +160,14 @@ public class SlidingPuzzleGUI extends Application implements Observer {
 			wonLabel.setText("");
 		});
 		
+		Button reset_const = new Button("constant board");
+		reset_const.setOnAction((e) -> {
+			updateThread.interrupt();
+			solveThread.interrupt();
+			pi.setVisible(false);
+			game.constantBoard();
+			wonLabel.setText("");
+		});
 		
 		Label stateLabel = new Label("Game State: ");
 		wonLabel = new Label("");
@@ -171,6 +181,7 @@ public class SlidingPuzzleGUI extends Application implements Observer {
 		topContent.getChildren().add(players);
 		topContent.getChildren().add(start);
 		topContent.getChildren().add(reset);
+		topContent.getChildren().add(reset_const);
 		topContent.getChildren().add(stateLabel);
 		topContent.getChildren().add(wonLabel);
 		topContent.getChildren().add(pi);

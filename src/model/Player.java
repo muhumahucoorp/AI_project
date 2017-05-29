@@ -27,6 +27,7 @@ public abstract class Player {
 		for (int i=0;i< solution.size(); ++i) {
 			game.performAction(solution.get(i));
 		}
+		System.out.println("Number of steps: " + solution.size());
 	}
 	
 	

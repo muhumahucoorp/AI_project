@@ -293,4 +293,25 @@ public class PuzzleGame extends Observable {
 	public String toString() {
 		return boardToString(gameBoard);
 	}
+	
+	/**
+	 * Create a non changing board to compare efficiency.
+	 */
+	public void constantBoard() {
+		makeSolutionState();
+		
+		Integer[] row1 = {1,3,6};
+		Integer[] row2 = {5,4,0};
+		Integer[] row3 = {2,8,7};
+		gameBoard = new Integer[3][3];
+		gameBoard[0] = row1;
+		gameBoard[1] = row2;
+		gameBoard[2] = row3;
+		
+		log.clear();
+		won =false;
+
+		setChanged();
+		notifyObservers();		
+	}
 }
