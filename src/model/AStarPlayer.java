@@ -8,6 +8,12 @@ import java.util.PriorityQueue;
 
 import model.PuzzleGame.action;
 
+/**
+ * 
+ * 
+ * @author Malte Lucius
+ * @author Dennis Rachui
+ */
 public class AStarPlayer extends Player {
 
 	@Override

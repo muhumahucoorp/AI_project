@@ -6,8 +6,8 @@ import java.util.List;
 import model.PuzzleGame.action;
 
 /**
- * Set with an action and the step in the game
- * in which it occured
+ * Set with an action, its heuristic value and
+ * the board, the action causes.
  * 
  * @author Malte Lucius
  *
